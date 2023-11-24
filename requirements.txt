@@ -1,0 +1,13 @@
+opencv-python
+tqdm
+numpy
+pandas
+torch
+ultralytics
+matplotlib
+scipy
+Pillow
+numpy
+tensorboard
+pyyaml
+yacs
