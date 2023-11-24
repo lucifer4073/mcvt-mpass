@@ -34,6 +34,70 @@ Video-2:
 
 [link] <https://iitgnacin-my.sharepoint.com/:v:/g/personal/21110040_iitgn_ac_in/ETrg69Ow0Z5GmAqi5eGszYoBnihlQo4Io8aSXW3RQSskuA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=Mby865>
 
+## Project Structure
+
+### Main script
+
+`main.py` : Takes a 5 fps video input, runs tracker and detection and creates a gallery dataset for each camera id
+
+### Utility modules
+
+### 1. `compute_distance_matrix.py`
+
+This file likely contains code related to computing distance matrices. It might be used for calculating distances between points or entities in a dataset.
+
+### 2. `Dataset.py`
+
+`Dataset.py`  a module that handles the management and processing of datasets. It contain classes and functions for loading, preprocessing, and manipulating datasets.
+
+### 3. `Detector.py`
+
+This file contains code related to object detection. It includes functions and classes for detecting objects within images or videos.
+
+### 4. `detect_time.py`
+
+`detect_time.py` involves time-related functionalities in the context of detection. It may be used for tracking the time of detection events or durations.
+
+### 5. `fps_conversion.py`
+
+This file is responsible for converting frames per second (fps) values. It contains functions for converting between different fps representations.
+
+### 6. `Image_manager.py`
+
+`Image_manager.py` is involved in managing images. It may include functions and classes for loading images in queue data structure.
+
+### 7. `make_video.py`
+
+This file related to video creation. It contain functions for assembling a series of images or frames into a video file.
+
+### 8. `New_tracker.py`
+
+Contains implementation of deepsort tracker
+
+### 9. `plotting_funcs.py`
+
+Used in plotting the results
+
+### 10. `properties.py`
+
+This file contain configurations or properties used throughout the utility. It could include constants, settings, or parameters used by various modules.
+
+### 11. `REID`
+
+The `REID` directory contain code related to Re-Identification (REID). This could involve methods for identifying and tracking objects or individuals across different scenes or frames.
+
+### 12. `ROI_drawing.py`
+
+`ROI_drawing.py` contains code for drawing Regions of Interest (ROIs).
+
+### models
+
+It consists of object detection models
+
+### pretrained_models
+
+Consists of pretrained weights for reidentification
+
 ## Usage
 
 ### Command Line Interface (CLI)
