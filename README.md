@@ -28,11 +28,11 @@ Given below is the trimmed link for the two datasets
 
 Video-1: 
 
-[link] <https://iitgnacin-my.sharepoint.com/:v:/g/personal/21110040_iitgn_ac_in/ETrg69Ow0Z5GmAqi5eGszYoBnihlQo4Io8aSXW3RQSskuA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=Mby865>
+[link] <https://iitgnacin-my.sharepoint.com/:v:/g/personal/21110040_iitgn_ac_in/ETrg69Ow0Z5GmAqi5eGszYoBnihlQo4Io8aSXW3RQSskuA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=QdHfqs>
 
 Video-2:
 
-[link] <https://iitgnacin-my.sharepoint.com/:v:/g/personal/21110040_iitgn_ac_in/ETrg69Ow0Z5GmAqi5eGszYoBnihlQo4Io8aSXW3RQSskuA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=Mby865>
+[link] <https://iitgnacin-my.sharepoint.com/:v:/g/personal/21110040_iitgn_ac_in/EYH25J5NqQ5IgioUL-c5_40B8g5o8cj9v2cVifhDCJtvYQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=mmp0iI>
 
 ## Project Structure
 
@@ -82,21 +82,30 @@ Used in plotting the results
 
 This file contain configurations or properties used throughout the utility. It could include constants, settings, or parameters used by various modules.
 
-### 11. `REID`
+### 11. `REID Utils`
 
-The `REID` directory contain code related to Re-Identification (REID). This could involve methods for identifying and tracking objects or individuals across different scenes or frames.
+This folder contains utility functions for the person Re-Identification (REID) module.
 
 ### 12. `ROI_drawing.py`
 
 `ROI_drawing.py` contains code for drawing Regions of Interest (ROIs).
 
-### models
+### 12. `Threads.py`
 
-It consists of object detection models
+Consist of application of multithreading process in a multi camera system.
 
-### pretrained_models
+# Models Used in the Process
 
-Consists of pretrained weights for reidentification
+## YOLOv8
+- **Description:** YOLOv8 (You Only Look Once, version 8) is an object detection model known for its real-time object detection capabilities.
+- **Link to Model:** [YOLOv8 Model](https://iitgnacin-my.sharepoint.com/:u:/g/personal/21110040_iitgn_ac_in/Ee2coWMsUT9IhfiQ9f__VW8BCL59N_vkMO94oM-NB-dhfg?e=iVpQ5X)
+
+## AlignedReID ResNet-50
+- **Description:** AlignedReID ResNet-50 is a model specifically designed for person re-identification tasks, providing robust features for matching individuals across different camera views.
+- **Link to Weights:** [AlignedReID ResNet-50 Weights](https://iitgnacin-my.sharepoint.com/:u:/g/personal/21110040_iitgn_ac_in/EYos21S06O5OgEUzgitYKFMBq8pYnf476k85sZBFZsjz7A?e=QbHECs)
+
+---
+
 
 ## Usage
 
@@ -107,7 +116,7 @@ To run the Multi Camera Visitor Tracking System via the command line interface (
 1. **Clone the Repository:** Clone the repo to local machine
 
 ``` shell
-git clone https://github.com/AtalGupta/visitor-dwell-time.git
+git clone https://github.com/lucifer4073/mcvt-mpass.git
 ```
 2. **Run system**: Run the Multi Camera Visitor Tracking System using the following command:
 

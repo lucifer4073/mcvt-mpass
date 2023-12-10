@@ -7,35 +7,36 @@ def plot_heatmap(matrix):
     plt.colorbar()
     plt.show()
 
-def plot_bbox_on_frame(frame, bbox, bbox_id):
-    # Extract coordinates
-    x_min, y_min, x_max, y_max = bbox
 
+def display_frame(frame, window_title='Frame'):
     # Convert the frame to RGB (OpenCV uses BGR by default)
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Draw the bounding box
-    cv2.rectangle(frame_rgb, (int(x_min), int(y_min)), (int(x_max), int(y_max)), (255, 0, 0), 2)
-
-    # Display the ID
-    cv2.putText(frame_rgb, f'ID: {bbox_id}', (int(x_min), int(y_min) - 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA)
-
     # Display the frame
-    cv2.imshow('Frame with Bounding Box', frame_rgb)
+    cv2.imshow(window_title, frame_rgb)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-# if __name__ == "__main__":
-#     # Example usage
-#     m = 5  # Number of rows
-#     n = 8  # Number of columns
+def plot_bboxes_with_ids(frame, boxes, box_ids,display=False):
+    # Convert the frame to RGB (OpenCV uses BGR by default)
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-#     # Create a random m x n matrix for demonstration
-#     matrix = np.random.rand(m, n)
+    # Loop through each bounding box and ID
+    for bbox, bbox_id in zip(boxes, box_ids):
+        # Extract coordinates
+        x_min, y_min, x_max, y_max = bbox
 
-#     # Plot the heatmap
-#     plot_heatmap(matrix)
+        # Draw the bounding box
+        cv2.rectangle(frame_rgb, (int(x_min), int(y_min)), (int(x_max), int(y_max)), (255, 0, 0), 2)
+
+        # Display the ID
+        cv2.putText(frame_rgb, f'ID: {bbox_id}', (int(x_min), int(y_min) - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA)
+
+    # Use the display_frame function to display the frame
+    if display:
+        display_frame(frame_rgb)
+
 
 if __name__ == "__main__":
     # Example usage
@@ -44,4 +45,4 @@ if __name__ == "__main__":
     bbox_id = 1  # Example ID
     
     # Plot the bounding box on the frame with ID
-    plot_bbox_on_frame(frame, bbox, bbox_id)
+    plot_bboxes_with_ids(frame, bbox, bbox_id,display=True)

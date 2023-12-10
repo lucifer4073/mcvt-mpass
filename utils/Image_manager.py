@@ -1,5 +1,5 @@
 import heapq
-
+import os,cv2
 class PriorityQueue:
     def __init__(self):
         self.queue = []
@@ -28,7 +28,62 @@ class ImageQueueManager:
 
     def get_priority_queue(self, tracking_id):
         return self.queue_dict.get(tracking_id, None)
+    
+def save_images(image_queue_manager, save_path, cam_id):
+    for tracking_id, priority_queue in image_queue_manager.queue_dict.items():
+        if priority_queue:
+            tracking_id_dir = os.path.join(save_path, f"{tracking_id}")
+            os.makedirs(tracking_id_dir, exist_ok=True)
 
+            for index, (confidence, image_array) in enumerate(priority_queue.get_top_pairs()):
+                image_filename = f"{tracking_id}_{cam_id}_{index}.jpg"
+                image_path = os.path.join(tracking_id_dir, image_filename)
+                save_image(image_array, image_path)
+
+def save_image(image_array, image_path):
+    cv2.imwrite(image_path, image_array)
+
+def get_all_files_in_subfolders(parent_path):
+    file_paths = []
+
+    # Walk through all subdirectories and get file paths
+    for dirpath, _, filenames in os.walk(parent_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            file_paths.append(file_path)
+
+    return file_paths
+
+def get_all_file_paths(parent_path_list):
+    file_paths=[]
+    for parent_path in parent_path_list:
+        file_paths.extend(get_all_files_in_subfolders(parent_path))
+    return file_paths
+
+def save_image(image_array, image_path):
+    """
+    Save an image to the specified path.
+
+    Args:
+    - image_array: Numpy array representing the image.
+    - image_path: Path to save the image.
+    """
+    cv2.imwrite(image_path, image_array)
+
+def delete_image(image_path):
+    """
+    Delete an image at the specified path.
+
+    Args:
+    - image_path: Path of the image to be deleted.
+    """
+    try:
+        os.remove(image_path)
+        print(f"Image at '{image_path}' deleted successfully.")
+    except FileNotFoundError:
+        print(f"Image at '{image_path}' not found.")
+    except Exception as e:
+        print(f"Error deleting image: {e}")
 if __name__ == "__main__":
     # Example usage:
     queue_manager = ImageQueueManager()
