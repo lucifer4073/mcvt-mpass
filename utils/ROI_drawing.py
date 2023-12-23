@@ -1,4 +1,4 @@
-import cv2
+import cv2,numpy
 
 def select_roi_from_video(video_path):
     """
@@ -59,7 +59,7 @@ def select_roi_from_video(video_path):
 
     if roi_selected:
         # Return ROI coordinates
-        return [x1, y1, x2, y2]
+        return numpy.array([x1, y1, x2, y2])
     else:
         # Return an empty list if ROI selection was not successful
         return []

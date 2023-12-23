@@ -17,7 +17,16 @@ def display_frame(frame, window_title='Frame'):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def plot_bboxes_with_ids(frame, boxes, box_ids,display=False):
+def plot_bbox(frame,bbox):
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    x_min, y_min, x_max, y_max = bbox
+    # Draw the bounding box
+    cv2.rectangle(frame_rgb, (int(x_min), int(y_min)), (int(x_max), int(y_max)), (255, 0, 0), 2)
+    
+    return frame_rgb
+
+
+def plot_bboxes_with_ids(frame, boxes, box_ids,display=False,wtitle="Frame"):
     # Convert the frame to RGB (OpenCV uses BGR by default)
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -35,7 +44,10 @@ def plot_bboxes_with_ids(frame, boxes, box_ids,display=False):
 
     # Use the display_frame function to display the frame
     if display:
-        display_frame(frame_rgb)
+        display_frame(frame_rgb,wtitle)
+    
+    return frame_rgb
+    
 
 
 if __name__ == "__main__":

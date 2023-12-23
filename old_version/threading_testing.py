@@ -1,13 +1,17 @@
 import threading
 import cv2
-import os
 import numpy as np
+import sys
+sys.path.append('.')
 from ultralytics import YOLO
-from utils.ROI_drawing import select_roi_from_video
+from utils.roi_extract import *
+from utils.ROI_drawing import *
 from utils.properties import check_roi, create_directory
 from utils.Image_manager import *
 from utils.REID.sort_ids import *
 from utils.plotting_funcs import *
+
+
 
 def run_tracker_in_thread(filename, model, file_index,roi,save_path,cam_id,reidentify=False, gallery=None, reid_model=''):
     """
@@ -55,7 +59,7 @@ def run_tracker_in_thread(filename, model, file_index,roi,save_path,cam_id,reide
             cropped_image = frame[int(y1):int(y2), int(x1):int(x2)]
             image_pair = (cropped_image, confidence)
             
-            if not reidentify:
+            if reidentify:
                     query_image_path = os.path.join("temporary_cache", "temp_img.jpg")
                     save_image(cropped_image, query_image_path)
                     closest_id, _ = find_matching_id_with_distances(reid_model, query_image_path, gallery)
@@ -75,29 +79,42 @@ def run_tracker_in_thread(filename, model, file_index,roi,save_path,cam_id,reide
             break
 
     # Release video sources
-    cv2.destroyAllWindows()
+    video.release()
 
+reid_model=load_pretrained_weights("pretrained_models\\resnet50_alignedreid.pth")
+#save paths
+s1=os.path.join("temporary_cache","c3")
+s2=os.path.join("temporary_cache","c4")
+# Load the models
+model1 = YOLO('models\yolov8n (1).pt')
+model2 = YOLO('models\yolov8n (1).pt')
 
-def run_multithreaded_tracking(video_paths, save_paths, cam_ids, reidentify, gallery, reid_model=''):
-    threads = []
-    ROI=[]
-    for vid_path in video_paths:
-        roi=select_roi_from_video(vid_path)
-        ROI.append(roi)  
-    for i, video_path in enumerate(video_paths):
-        thread = threading.Thread(target=run_tracker_in_thread, args=(), daemon=True)
-        threads.append(thread)
+#ids
 
-    for thread in threads:
-        thread.start()
+cam_id1='c3'
+cam_id2='c4'
+# Define the video files for the trackers
+video_file1 = "c3_v1_s1_5fps.mp4"  # Path to video file, 0 for webcam
+video_file2 = "c4_v3_s1_5fps.mp4"  # Path to video file, 0 for webcam, 1 for external camera
 
-    for thread in threads:
-        thread.join()
+#select roi
+roi_1=select_roi_from_video(video_file1)
+roi_2=select_roi_from_video(video_file2)
 
-if __name__ == "__main__":
-    # Example Usage:
-    video_files = ["path/to/video1.mp4", "path/to/video2.mp4"]
-    save_paths = ["generated_data\cam1", "generated_data\cam2"]
-    cam_ids = ["cam1", "cam2"]
+# Create the tracker threads
+tracker_thread1 = threading.Thread(target=run_tracker_in_thread, args=(video_file1, model1, 1,roi_1,s1,cam_id1), daemon=True)
+tracker_thread2 = threading.Thread(target=run_tracker_in_thread, args=(video_file2, model2, 2,roi_2,s2,cam_id2), daemon=True)
 
-    run_multithreaded_tracking(video_files, save_paths, cam_ids, reidentify=True, gallery=your_gallery_data, reid_model=your_reid_model)
+# Start the tracker threads
+tracker_thread1.start()
+tracker_thread2.start()
+
+# Wait for the tracker threads to finish
+tracker_thread1.join()
+tracker_thread2.join()
+
+# Clean up and close windows
+cv2.destroyAllWindows()
+
+#,True,s1,reid_model
+
