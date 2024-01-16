@@ -1,8 +1,11 @@
 import torch
-import cv2
+import cv2,os
 from torchvision import transforms
 from PIL import Image
+import sys
+sys.path.append('.')
 from  aligned_reid.model.Model import Model
+from tqdm import tqdm
 
 def remove_fc(state_dict):
     for key in list(state_dict.keys()):
@@ -133,12 +136,46 @@ def total_distance_between_images(model, image_path_a, image_paths_bs):
 
     return net_distances
 
+
+def reid_implement(gallery_ids,query_ids):
+    gallery_ids.sort()
+    query_ids.sort()
+    return dict(zip(query_ids,gallery_ids))
+
+def assign_new_ids(model, query_folder_path, gallery_folder_path):
+    query_image_paths = [os.path.join(query_folder_path, img) for img in os.listdir(query_folder_path) if img.endswith(".jpg")]
+    gallery_image_paths = [os.path.join(gallery_folder_path, img) for img in os.listdir(gallery_folder_path) if img.endswith(".jpg")]
+
+    new_ids = {}
+    dists={}
+
+    for query_image_path in tqdm(query_image_paths, desc="Processing Images", unit="image"):
+        query_image_name = os.path.basename(query_image_path)
+        query_track_id = query_image_name.split('_')[0]
+
+        distances = total_distance_between_images(model, query_image_path, gallery_image_paths)
+
+        min_distance_index = distances.index(min(distances))
+        gallery_image_name = os.path.basename(gallery_image_paths[min_distance_index])
+        gallery_track_id = gallery_image_name.split('_')[0]
+
+        new_ids[query_track_id] = gallery_track_id
+        dists[query_track_id]=distances[min_distance_index]
+    return new_ids,dists
+
 if __name__=="__main__":
     # Example usage:
-    f_global = torch.rand(2048)  # Placeholder for global feature of image A
-    f_local = [torch.rand(128) for _ in range(7)]  # Placeholder for local features of image A
-    g_global = torch.rand(2048)  # Placeholder for global feature of image B
-    g_local = [torch.rand(128) for _ in range(7)]  # Placeholder for local features of image B
+    # f_global = torch.rand(2048)  # Placeholder for global feature of image A
+    # f_local = [torch.rand(128) for _ in range(7)]  # Placeholder for local features of image A
+    # g_global = torch.rand(2048)  # Placeholder for global feature of image B
+    # g_local = [torch.rand(128) for _ in range(7)]  # Placeholder for local features of image B
 
-    net_distance = calculate_net_distance(f_global, f_local, g_global, g_local)
-    print("Net Distance between Image A and Image B:", net_distance.item())
+    # net_distance = calculate_net_distance(f_global, f_local, g_global, g_local)
+    # print("Net Distance between Image A and Image B:", net_distance.item())
+
+    reid_model=load_pretrained_weights("pretrained_models\\resnet50_alignedreid.pth")
+    query_folder_path="gallery\c10_v2"
+    gallery_folder_path="gallery\c3_v1"
+    new_ids,dists=assign_new_ids(reid_model,query_folder_path,gallery_folder_path)
+    print(new_ids)
+    print(dists)

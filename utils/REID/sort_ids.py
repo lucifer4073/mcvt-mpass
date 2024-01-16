@@ -52,6 +52,59 @@ def find_matching_id_with_distances(model, query_image_path, gallery_path):
     return closest_id,min_dist
 
 
+def process_video_newids(video_path, roi, tracking_model, id_dict):
+    cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        print("Error: Could not open video.")
+        return
+
+    # Get video properties
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = int(cap.get(5))
+
+    # Define the codec and create a VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_path = video_path.replace('.mp4', '_processed.mp4')
+    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Run tracker on the current frame
+        detections = tracking_model.detect(frame)
+
+        # Process each detection
+        for det in detections:
+            x, y, w, h, conf, class_id = det
+            center_x = x + w // 2
+            center_y = y + h // 2
+
+            # Check if the person is in ROI
+            if center_x >= roi[0] and center_x <= roi[2] and center_y >= roi[1] and center_y <= roi[3]:
+                # Change the old ID to the new ID for the detected frame
+                old_id = id_dict.get(class_id, 20)  # Default to 20 if ID not found
+                id_dict[class_id] = old_id + 1  # Increment the ID for the next frame
+
+            else:
+                # Person is outside ROI, give the ID as 20
+                old_id = 20
+
+            # Draw bounding box and ID on the frame
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(frame, f'ID: {old_id}', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+
+        # Write the frame to the output video
+        out.write(frame)
+
+    # Release the video capture and writer objects
+    cap.release()
+    out.release()
+
+    print(f"Processed video saved at: {output_path}")
 # gallery_path="temporary_cache\c3"
 # gallery_image_paths=get_all_file_paths(gallery_path)
 # print(gallery_image_paths)

@@ -85,7 +85,7 @@ def run_multithreaded_tracking(video_paths, save_paths, cam_ids, reidentify, gal
         roi=select_roi_from_video(vid_path)
         ROI.append(roi)  
     for i, video_path in enumerate(video_paths):
-        thread = threading.Thread(target=run_tracker_in_thread, args=(), daemon=True)
+        thread = threading.Thread(target=run_tracker_in_thread, args=(vid_path,), daemon=True)
         threads.append(thread)
 
     for thread in threads:
@@ -94,6 +94,8 @@ def run_multithreaded_tracking(video_paths, save_paths, cam_ids, reidentify, gal
     for thread in threads:
         thread.join()
 
+
+         
 if __name__ == "__main__":
     # Example Usage:
     video_files = ["path/to/video1.mp4", "path/to/video2.mp4"]
@@ -101,3 +103,16 @@ if __name__ == "__main__":
     cam_ids = ["cam1", "cam2"]
 
     run_multithreaded_tracking(video_files, save_paths, cam_ids, reidentify=True, gallery=your_gallery_data, reid_model=your_reid_model)
+
+"""
+SOME MAJOR FUNCTION CHANGES MADE HERE
+
+.
+
+.
+.
+
+USE THE GIVEN UPDATED FUNCTION
+
+"""
+

@@ -1,15 +1,17 @@
 import heapq
 import os,cv2
+import pandas as pd
+import pickle
 class PriorityQueue:
     def __init__(self):
         self.queue = []
 
     def push(self, pair):
-        image_array, confidence = pair
+        image_array, confidence= pair
         heapq.heappush(self.queue, (-confidence, image_array))
 
         # If the size exceeds 10, pop the pair with the least confidence
-        if len(self.queue) > 10:
+        if len(self.queue) > 2:
             heapq.heappop(self.queue)
 
     def get_top_pairs(self):
@@ -20,24 +22,26 @@ class ImageQueueManager:
     def __init__(self):
         self.queue_dict = {}
 
-    def add_image(self, tracking_id, image_pair):
+    def add_image(self, tracking_id, image_tri):
         if tracking_id not in self.queue_dict:
             self.queue_dict[tracking_id] = PriorityQueue()
 
-        self.queue_dict[tracking_id].push(image_pair)
+        self.queue_dict[tracking_id].push(image_tri)
 
     def get_priority_queue(self, tracking_id):
         return self.queue_dict.get(tracking_id, None)
     
 def save_images(image_queue_manager, save_path, cam_id):
+
     for tracking_id, priority_queue in image_queue_manager.queue_dict.items():
         if priority_queue:
-            tracking_id_dir = os.path.join(save_path, f"{tracking_id}")
-            os.makedirs(tracking_id_dir, exist_ok=True)
+            # tracking_id_dir = os.path.join(save_path, f"{tracking_id}")
+            # os.makedirs(tracking_id_dir, exist_ok=True)
 
             for index, (confidence, image_array) in enumerate(priority_queue.get_top_pairs()):
                 image_filename = f"{tracking_id}_{cam_id}_{index}.jpg"
-                image_path = os.path.join(tracking_id_dir, image_filename)
+
+                image_path = os.path.join(save_path, image_filename)
                 save_image(image_array, image_path)
 
 def save_image(image_array, image_path):
@@ -60,15 +64,6 @@ def get_all_file_paths(parent_path_list):
         file_paths.extend(get_all_files_in_subfolders(parent_path))
     return file_paths
 
-def save_image(image_array, image_path):
-    """
-    Save an image to the specified path.
-
-    Args:
-    - image_array: Numpy array representing the image.
-    - image_path: Path to save the image.
-    """
-    cv2.imwrite(image_path, image_array)
 
 def delete_image(image_path):
     """
@@ -84,6 +79,14 @@ def delete_image(image_path):
         print(f"Image at '{image_path}' not found.")
     except Exception as e:
         print(f"Error deleting image: {e}")
+def save_list_to_file(lst, filename):
+    with open(filename, 'wb') as file:
+        pickle.dump(lst, file)
+
+def load_list_from_file(filename):
+    with open(filename, 'rb') as file:
+        loaded_list = pickle.load(file)
+    return loaded_list
 if __name__ == "__main__":
     # Example usage:
     queue_manager = ImageQueueManager()

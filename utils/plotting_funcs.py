@@ -25,7 +25,17 @@ def plot_bbox(frame,bbox):
     
     return frame_rgb
 
+def draw_box_with_id(frame, box, track_id):
+    x1, y1, x2, y2 = map(int, box)
 
+    # Draw the box
+    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    # Display the track ID
+    cv2.putText(frame, f'Track ID: {track_id}', (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+    return frame
 def plot_bboxes_with_ids(frame, boxes, box_ids,display=False,wtitle="Frame"):
     # Convert the frame to RGB (OpenCV uses BGR by default)
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
